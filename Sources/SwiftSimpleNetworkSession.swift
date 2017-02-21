@@ -7,7 +7,7 @@ import Foundation
 import Dispatch
 
 // Iherits from object to be able to use index:of: on tasks list
-class SimpleDataTask: NSObject {
+open class SimpleDataTask: NSObject {
     var url:URL?
     var completionHandler:((Data?, Error?) -> ())?
     
@@ -20,7 +20,7 @@ class SimpleDataTask: NSObject {
         self.completionHandler = completionHandler
     }
     
-    func resume(){
+    open func resume(){
         guard #available(OSX 10.10, *) else {return}
         
         if let url = url {
@@ -36,7 +36,7 @@ class SimpleDataTask: NSObject {
     }
 }
 
-class SimpleNetworkSession {
+open class SimpleNetworkSession {
     open static let shared = SimpleNetworkSession()
     
     private var tasks:[SimpleDataTask] = []
@@ -56,8 +56,8 @@ class SimpleNetworkSession {
 }
 
 // MARK: JSON helper method
-extension SimpleNetworkSession {
-    open func jsonTask(with url: URL, completionHandler: @escaping (Any?, Error?) -> ()) -> SimpleDataTask {
+public extension SimpleNetworkSession {
+    public func jsonTask(with url: URL, completionHandler: @escaping (Any?, Error?) -> ()) -> SimpleDataTask {
         return dataTask(with: url, completionHandler: { (data, error )in
             if let data = data {
                 do {
@@ -73,4 +73,17 @@ extension SimpleNetworkSession {
     }
 }
 
+func test() {
+    let token =  "587c733af90799fde4b565eeb6532d05"
+    if let url = URL(string: "http://api.openweathermap.org/data/2.5/weather?q=Rennes&APPID=\(token)") {
+        let task = SimpleNetworkSession.shared.jsonTask(with: url){ (json, error) in
+            print("\(json)")
+        }
+        task.resume()
+    }
+    while true {
+        print("Waiting...")
+        sleep(1)
+    }
+}
 
