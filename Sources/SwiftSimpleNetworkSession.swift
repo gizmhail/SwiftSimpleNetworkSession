@@ -73,17 +73,4 @@ extension SimpleNetworkSession {
     }
 }
 
-func test() {
-    let token =  "587c733af90799fde4b565eeb6532d05"
-    if let url = URL(string: "http://api.openweathermap.org/data/2.5/weather?q=Rennes&APPID=\(token)") {
-        let task = SimpleNetworkSession.shared.jsonTask(with: url){ (json, error) in
-            print("\(json)")
-        }
-        task.resume()
-    }
-    while true {
-        print("Waiting...")
-        sleep(1)
-    }
-}
 
